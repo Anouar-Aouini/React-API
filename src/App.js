@@ -1,18 +1,28 @@
-import React, { useEffect, useState } from "react";
+import React , {useState, useEffect} from 'react'
+import './App.css';
+import UserList from './UserList'
+import axios from 'axios'
 
-const App = () => {
- const [data, setData] = useState();// where to store the returned data
- const [error, setError] = useState(null);// where to store the coming errors
- useEffect(() => {
-   function fetchData() {// the function to fetch data from the api
-     fetch("https://hn.algolia.com/api/v1/search?query=redux")
-       .then(res => res.json())
-       .then(res => setData(res))
-       .catch(err => setError(err));
-   }
-
-   fetchData();
- }, []);
- return <div />;
-};
+function App() {
+const [listOfUSer , setListOfUser] = useState([])
+const fetchData = async () => {
+  try {
+  const result = await axios.get("https://jsonplaceholder.typicode.com/users")
+  setListOfUser(result.data)
+  }
+  catch(err) {
+    setListOfUser(null)
+  }
+}
+useEffect(() => {
+      fetchData();
+  }, [])
+  console.log(listOfUSer)
+    return (
+    <div className="App">
+      {listOfUSer? <> {listOfUSer.map((user,key)=><UserList key={user.id} name={user.name} email={user.email}/>)}
+      </>:<div>OOOPS! There's nothing to be displayed</div>}
+    </div>
+  );
+}
 export default App;
